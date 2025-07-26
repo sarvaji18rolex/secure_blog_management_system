@@ -1,54 +1,40 @@
-# 📝 Secure Blog Management System using PHP and MySQL
+-- Create the database
+CREATE DATABASE IF NOT EXISTS blog1;
+USE blog1;
 
-A complete blog management system built with PHP and MySQL that allows users to create, manage, and publish blog posts securely. It includes user authentication, post creation/editing, and frontend post listing with clean styling.
+-- Users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
----
+-- Roles table (optional, for advanced role management)
+CREATE TABLE roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL UNIQUE,
+    description TEXT
+);
 
+-- Posts table
+CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    author_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
-
-## 🚀 Features
-
-- 🔐 **Secure Login System**
-- ✍️ **Create, Edit, Delete Blog Posts**
-- 🧾 **View All Blog Posts with Pagination**
-- 📅 **Timestamps on Posts**
-- 🎨 **Basic Frontend with CSS**
-- 🔍 **Search Functionality**
-- 🖥️ **Responsive Layout**
-
----
-
-## 🧰 Technologies Used
-
-- PHP (Core PHP)
-- MySQL (Relational Database)
-- HTML, CSS
-- Apache (XAMPP/WAMP)
-
----
-
-## 📁 Folder Structure
-
-/SecureBlogSystem/
-├── db.php
-├── login.php / logout.php
-├── dashboard.php
-├── add_post.php / edit_post.php / delete_post.php / view_post.php
-├── includes/
-│ ├── header.php
-│ └── footer.php
-├── css/
-│ └── style.css
-└── README.md
-
-How to run the project:
-
-1.Clone the Repository.
-
-2.Start Apache & MySQL using XAMPP/WAMP.
-
-3.Import the database.
-
-4.Configure db.php with your database: $host = "localhost"; $user = "root"; $password = ""; $dbname = "Your database name";
-
-5.Open the project in your browser.
+-- Login logs (optional, for tracking login activity)
+CREATE TABLE login_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
